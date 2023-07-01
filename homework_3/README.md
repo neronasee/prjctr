@@ -28,21 +28,37 @@ Following commands were used to simulate different amounts of load:
 ## Results
 
 ### Node.JS app
+![image](https://github.com/neronasee/prjctr/assets/15675643/145df1e0-11f8-4017-b117-e7af62ccc622)
 
 ### Network
+![image](https://github.com/neronasee/prjctr/assets/15675643/21d8fc49-78c7-43c5-8ad6-7a0012f7c475)
 
-### CPU
-
-
-### Memory
+### CPU/Memory
+![image](https://github.com/neronasee/prjctr/assets/15675643/b37cec73-ac64-4135-ab60-8923d9ee400c)
 
 ### Disk
+![image](https://github.com/neronasee/prjctr/assets/15675643/6cabaf73-8d8f-4882-84bb-0a437c216ea0)
+
+
 
 ### NGINX
 
+![image](https://github.com/neronasee/prjctr/assets/15675643/fb161a05-e67e-4437-9c78-a7bb12bf9707)
+
+
 ### ElasticSearch
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/5aad2e24-dc50-47b0-bde8-5c4d42b7d47a)
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/9ae3dd5b-d520-4ad9-8198-163a72e59eb9)
 
 
 ### Mongo
 
+![image](https://github.com/neronasee/prjctr/assets/15675643/44d7c98a-f598-488e-8d69-ce543ce6c624)
+
+
 ### Docker
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/4f628daf-0336-45de-acd5-7521817464ed)
+
