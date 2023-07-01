@@ -8,7 +8,7 @@ A system that uses TIG stack for monitoring
 - nodejs
 - nginx
 
-Node.JS app writes to MongoDB and ElasticSearch every time it's requests and http://localhost:5050
+Node.JS app writes to MongoDB and ElasticSearch every time it gets a request on http://localhost:5050 (which is forwarded by NGINX)
 
 ## Run
 
