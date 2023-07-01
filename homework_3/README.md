@@ -8,6 +8,8 @@ A system that uses TIG stack for monitoring
 - nodejs
 - nginx
 
+Node.JS app writes to MongoDB and ElasticSearch every time it's requests and http://localhost:5050
+
 ## Run
 
 - docker-compose up
