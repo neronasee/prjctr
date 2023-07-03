@@ -13,7 +13,7 @@ Node.JS app writes to MongoDB and ElasticSearch every time it gets a request on 
 ## Run
 - cd application && npm i
 - docker-compose up
-- go to localhost:3000
+- go to http://localhost:8080/grafana/ or directly http://localhost:3000 and login with `admin`/`admin` creds
 - Open "Telegraf metrics" dashboard
 
 ## Test
