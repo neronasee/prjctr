@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  worker:
+    build: ./worker
+    ports:
+      - 5050:5050
+    env_file: configuration.env
+    volumes:
+      - ./worker:/usr/src/app
