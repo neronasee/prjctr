@@ -16,3 +16,5 @@ The worker sends weather data to GA4 every 30 minutes
 ## Check it in Looker Studio
 
 https://lookerstudio.google.com/u/0/reporting/23a05078-a056-480d-802c-bcd9fe6508f0/page/vDeWD
+
+![image](https://i.imgur.com/QQySLJK.jpg)
