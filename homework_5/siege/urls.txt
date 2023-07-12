@@ -1,0 +1,3 @@
+http://nginx:80/data POST < payload.json
+
+http://nginx:80/data

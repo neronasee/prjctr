@@ -1,0 +1,54 @@
+version: '3.7'
+
+networks:
+  siege-network:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
+    networks:
+      - siege-network
+    depends_on:
+      - application
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 200M
+
+  application:
+    build: ./application
+    ports:
+      - 5050:5050
+    networks:
+      - siege-network
+    env_file: configuration.env
+    depends_on:
+      - mongodb
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 100M
+
+  mongodb:
+    image: mongo:latest
+    networks:
+      - siege-network
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 200M
+
+volumes:
+  mongo_data: {}
