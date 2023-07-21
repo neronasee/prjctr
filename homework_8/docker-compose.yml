@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  custom_nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./data:/usr/local/openresty/nginx/html
+    ports:
+      - 8080:80
