@@ -29,6 +29,12 @@ recomputationProbability = (maxTTL - ttl) / maxTTL;
 
 ## Testing results
 
+command used for testing:
+
+```
+siege -d -c 10 -t 10m "http://localhost:5050/randomPerson"
+```
+
 ### noeviction
 
 `Request failed: OOM command not allowed when used memory > 'maxmemory'`
