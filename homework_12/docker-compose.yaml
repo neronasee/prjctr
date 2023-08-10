@@ -1,0 +1,97 @@
+version: '3'
+services:
+  application:
+    build: ./application
+    ports:
+      - 5050:5050
+    volumes:
+      - ./application:/usr/src/app
+    networks:
+      - redis-net
+
+  redis-master:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/master.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server --maxmemory 25mb --maxmemory-policy allkeys-random
+    networks:
+      - redis-net
+
+  redis-slave:
+    image: redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - ./redis/slave.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - redis-net
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-sentinel:
+    image: redis
+    volumes:
+      - ./redis/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+    networks:
+      - redis-net
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    depends_on:
+      - redis-master
+      - redis-slave
+    ports:
+      - '26379:26379'
+
+  telegraf:
+    image: telegraf:1.23.4-alpine
+    user: root
+    entrypoint: "telegraf"
+    networks:
+      - redis-net
+    volumes:
+    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+      - application
+      - redis-master
+      - redis-slave
+      - redis-sentinel
+    links:
+      - influxdb
+    ports:
+    - '127.0.0.1:8125:8125/udp'
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    networks:
+      - redis-net
+    ports:
+      - '127.0.0.1:8086:8086'
+    volumes:
+      - ./:/imports
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:8.0.2
+    networks:
+      - redis-net
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+
+volumes:
+  grafana_data: {}
+  influxdb_data: {}
+  mongo_data: {}
+
+networks:
+  redis-net:
+    driver: bridge
