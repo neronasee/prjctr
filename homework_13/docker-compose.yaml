@@ -1,0 +1,136 @@
+version: '3'
+services:
+  redis-metrics:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "redisMetrics.js"]
+    networks:
+      - redis-net
+    depends_on:
+      - redis-master
+
+  redis-producer:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "redisProducer.js"]
+    networks:
+      - redis-net
+    deploy:
+      replicas: 3
+
+  redis-consumer:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "redisConsumer.js"]
+    networks:
+      - redis-net
+    deploy:
+      replicas: 3
+
+  beanstalkd-metrics:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "beanstalkdMetrics.js"]
+    networks:
+      - redis-net
+    depends_on:
+      - beanstalkd
+
+  beanstalkd-producer:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "beanstalkdProducer.js"]
+    networks:
+      - redis-net
+    deploy:
+      replicas: 3
+
+  beanstalkd-consumer:
+    build: ./scripts
+    env_file: config.env
+    command: ["node", "beanstalkdConsumer.js"]
+    networks:
+      - redis-net
+    deploy:
+      replicas: 3
+
+  redis-master:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/master.conf:/usr/local/etc/redis/redis.conf
+
+    # NOP
+    # command: redis-server --save "" --appendonly no 
+
+    # AOF
+    # command: redis-server --save "" --appendonly yes 
+
+    # RDB
+    command: redis-server --save 900 1 --save 300 10 --save 60 10000 --appendonly no #
+
+    networks:
+      - redis-net
+
+  beanstalkd:
+    image: bodsch/docker-beanstalkd
+    # NOP
+    command: -F
+    
+    # Default write binlog every second
+    # command: -f 1
+    ports:
+      - "11300:11300"
+    networks:
+      - redis-net
+
+  telegraf:
+    image: telegraf:1.23.4-alpine
+    user: root
+    entrypoint: "telegraf"
+    networks:
+      - redis-net
+    volumes:
+    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+      - redis-master
+    links:
+      - influxdb
+    ports:
+    - '127.0.0.1:8125:8125/udp'
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    networks:
+      - redis-net
+    ports:
+      - '127.0.0.1:8086:8086'
+    volumes:
+      - ./:/imports
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:8.0.2
+    networks:
+      - redis-net
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+
+volumes:
+  grafana_data: {}
+  influxdb_data: {}
+
+networks:
+  redis-net:
+    driver: bridge
