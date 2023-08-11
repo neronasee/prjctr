@@ -43,24 +43,25 @@ docker compose up  beanstalkd-producer beanstalkd-consumer
 
 ### Beanstalkd - NoP
 
-![image](https://github.com/neronasee/prjctr/assets/15675643/c8a3d91a-4510-4ec4-97e0-14d69fcb0e5c)
+![image](https://github.com/neronasee/prjctr/assets/15675643/52585d7c-0b9d-4008-8efb-91d823213c83)
 
 
 ### Beanstalkd - Default settings (sync binlog once per 1s)
 
-![image](https://github.com/neronasee/prjctr/assets/15675643/c4492f0b-3eec-4d90-aaae-a389c5bba3c1)
+![image](https://github.com/neronasee/prjctr/assets/15675643/85785a54-84d4-4f44-a52f-d6bdbd013595)
 
 
 ### Redis - NoP
 
-![image](https://github.com/neronasee/prjctr/assets/15675643/1daefaa3-1af0-4a0d-9046-e0cf881a86fc)
+![image](https://github.com/neronasee/prjctr/assets/15675643/69ef208f-94cb-4d2c-88a1-a700cebca8b0)
 
 
 ### Redis - AoF
 
-![image](https://github.com/neronasee/prjctr/assets/15675643/c13e0628-8f08-4da9-b077-75080320ab6f)
+![image](https://github.com/neronasee/prjctr/assets/15675643/59ad94be-77e1-42a2-9f2d-a69f10e35cdf)
 
 
 ### Redus - RDB
 
-![image](https://github.com/neronasee/prjctr/assets/15675643/6307fa8d-fcf5-4517-a447-5f48ddafd7a3)
+![image](https://github.com/neronasee/prjctr/assets/15675643/0af67a76-404b-4f60-9ba5-ec5c20644f49)
+
