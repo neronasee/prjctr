@@ -40,13 +40,16 @@ siege -d -c 10 -t 10m "http://localhost:5050/randomPerson"
 `Request failed: OOM command not allowed when used memory > 'maxmemory'`
 
 ### allkeys-lru
-![image](https://github.com/neronasee/prjctr/assets/15675643/28b48ed3-7d14-4182-a860-5292008f5bf3)
+![image](https://github.com/neronasee/prjctr/assets/15675643/1085ad77-d5f3-4490-8907-ea0f2c3d8657)
+
 
 ### allkeys-lfu
-![image](https://github.com/neronasee/prjctr/assets/15675643/440dcb21-1aba-42ee-85a1-0d63c83de4f4)
+![image](https://github.com/neronasee/prjctr/assets/15675643/d6858940-8097-4ff2-adfb-ae83eb7984db)
+
 
 ### allkeys-random
-![image](https://github.com/neronasee/prjctr/assets/15675643/1bfb736f-beac-41e8-99b9-63e311ab4675)
+![image](https://github.com/neronasee/prjctr/assets/15675643/3202996e-b462-45f0-8266-ab2ee1f52853)
+
 
 ## Summary
 
