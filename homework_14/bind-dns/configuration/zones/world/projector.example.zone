@@ -1,0 +1,16 @@
+$TTL    1d
+@       IN      SOA     ns.projector.example. root.projector.example. (
+                  3      ; Serial
+                  1d     ; Refresh
+                  1h     ; Retry
+                  1w     ; Expire
+                  1h )   ; Negative Cache TTL
+
+; Name servers - NS records
+     IN      NS      ns.projector.example.
+
+; World-specific A record
+projector.example.                IN      A      192.168.0.4 ;
+
+; Name server - A record
+ns.projector.example.             IN      A      192.168.0.2

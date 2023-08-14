@@ -1,0 +1,50 @@
+
+// Define ACLs for US and UA regions
+
+acl "ua" {
+    geoip country UA;
+};
+
+acl "ua-test" {
+    192.168.0.0/27;
+};
+
+// Define view for UA region
+view "ua-view" {
+    #match-clients { "ua"; };
+    match-clients { "ua-test"; };
+
+    recursion yes;
+
+    zone "projector.example" {
+        type master;
+        file "/etc/bind/zones/ua/projector.example.zone";
+    };
+
+    // Additional zones for UA region
+};
+
+
+// Define view for US region
+view "world-view" {
+    match-clients { any; };
+    recursion yes;
+
+    zone "projector.example" {
+        type master;
+        file "/etc/bind/zones/world/projector.example.zone";
+    };
+
+    // Additional zones for US region
+};
+
+logging {
+     channel querylog {
+        file "/var/log/bind/querylog";
+        severity debug 10;
+        print-category yes;
+        print-time yes;
+        print-severity yes;
+     };
+     category queries { querylog;};
+};

@@ -1,0 +1,103 @@
+version: '3'
+
+services:
+  bind-dns:
+    image: internetsystemsconsortium/bind9:9.18
+    ports:
+      - "5300:53/udp"
+      - "5300:53/tcp"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.2
+
+  load-balancer-1:
+    image: nginx:latest
+    volumes:
+      - ./load-balancers/load-balancer-1/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8081:80"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.3
+
+  load-balancer-2:
+    image: nginx:latest
+    volumes:
+      - ./load-balancers/load-balancer-2/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8082:80"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.4
+
+  node1:
+    image: nginx:latest
+    volumes:
+      - ./nodes/node1/static:/usr/share/nginx/html
+      - ./nodes/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8083:80"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.10
+
+  node2:
+    image: nginx:latest
+    volumes:
+      - ./nodes/node2/static:/usr/share/nginx/html
+      - ./nodes/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8084:80"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.11
+
+  node3:
+    image: nginx:latest
+    volumes:
+      - ./nodes/node3/static:/usr/share/nginx/html
+      - ./nodes/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8085:80"
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.12
+
+  dns-test:
+    image: busybox
+    command: sh -c "echo 'nameserver 192.168.0.2' > /etc/resolv.conf && exec sh"
+    tty: true
+    stdin_open: true
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.21
+
+  dns-test-ua:
+    image: nginx:latest
+    command: sh -c "echo 'nameserver 192.168.0.2' > /etc/resolv.conf && chmod +x /usr/share/makeRequests.sh && /usr/share/makeRequests.sh"
+    volumes:
+      - ./makeRequests.sh:/usr/share/makeRequests.sh
+    tty: true
+    stdin_open: true
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.23
+
+  dns-test-world:
+    image: nginx:latest
+    command: sh -c "echo 'nameserver 192.168.0.2' > /etc/resolv.conf && chmod +x /usr/share/makeRequests.sh && /usr/share/makeRequests.sh"
+    volumes:
+      - ./makeRequests.sh:/usr/share/makeRequests.sh
+    tty: true
+    stdin_open: true
+    networks:
+      cdn:
+        ipv4_address: 192.168.0.100
+
+networks:
+  cdn:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+          gateway: 192.168.0.1
