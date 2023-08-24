@@ -31,3 +31,5 @@ this will spin up 10 replicas of script that simulates slow queries `SELECT SLEE
 ## Test results
 
 Graylog and Logstash seem to consume near the same % of CPU time and RAM. Though it should be noted, that Graylog already has visualisation mechanism and in ELK stack it's a separate component, which also consumes resources
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/d7598b4c-be9c-4f1a-8f85-001501a934bc)
