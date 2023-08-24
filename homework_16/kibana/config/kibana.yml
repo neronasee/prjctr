@@ -1,0 +1,22 @@
+# Kibana is served by a back end server. This setting specifies the port to use.
+server.port: 5601
+
+# This setting specifies the IP address of the back end server.
+server.host: "0.0.0.0"
+
+# Enables you to specify a path to mount Kibana at if you are running behind a proxy. This setting
+# cannot end in a slash.
+# server.basePath: ""
+
+# The maximum payload size in bytes for incoming server requests.
+# server.maxPayloadBytes: 1048576
+
+# The Kibana server's name.  This is used for display purposes.
+# server.name: "your-hostname"
+
+# The URL of the Elasticsearch instance to use for all your queries.
+# elasticsearch.url: "http://elasticsearch:9200"
+# elasticsearch.hosts: [ http://elasticsearch:9200 ]
+
+elasticsearch.username: kibana_system
+elasticsearch.password: kibana

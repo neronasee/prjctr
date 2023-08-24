@@ -1,0 +1,168 @@
+version: "3.9"
+
+services:
+  simulate_slow_queries:
+    build: ./scripts
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 10
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    command: >
+      --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=test_db
+    volumes:
+      - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./logs:/var/log/mysql
+    ports:
+      - '3306:3306'
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.1
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - ELASTIC_PASSWORD=root
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    restart: unless-stopped
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.9.1
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+    ports:
+      - 5044:5044
+      - 50000:50000/tcp
+      - 50000:50000/udp
+      - 9600:9600
+    environment:
+      LS_JAVA_OPTS: -Xms256m -Xmx256m
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.9.1
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:5.0.13
+
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+
+  graylog:
+    image: graylog/graylog:5.0
+    environment:
+    - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+    - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+    - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+    - GRAYLOG_ELASTICSEARCH_HOSTS=http://elasticsearch2:9200
+    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch2:9200 --  /docker-entrypoint.sh
+    restart: always
+    depends_on:
+      - mongo
+      - elasticsearch2
+    ports:
+    # Graylog web interface and REST API 
+    - 9000:9000
+    # Syslog TCP
+    - 1514:1514
+    # Syslog UDP
+    - 1514:1514/udp
+    # GELF TCP
+    - 12201:12201
+    # GELF UDP
+    - 12201:12201/udp
+    # Beat input 
+    - 5050:5050
+
+  filebeat_elk:
+    image: docker.elastic.co/beats/filebeat:8.9.1
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./filebeat/filebeat_elk.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs:/logs
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  filebeat_graylog:
+    image: docker.elastic.co/beats/filebeat:8.9.1
+    command: filebeat -e -strict.perms=false
+    volumes:
+      - ./filebeat/filebeat_graylog.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs:/logs
+    depends_on:
+      - elasticsearch
+    restart: unless-stopped
+
+  telegraf:
+    image: telegraf:1.23.4-alpine
+    user: root
+    entrypoint: "telegraf"
+    volumes:
+    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    ports:
+    - '127.0.0.1:8125:8125/udp'
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    ports:
+      - '127.0.0.1:8086:8086'
+    volumes:
+      - ./:/imports
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:8.0.2
+    depends_on:
+      - influxdb
+    links:
+      - influxdb
+    environment:
+     - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+
+
+volumes:
+  es-data: {}
+  grafana_data: {}
+  influxdb_data: {}

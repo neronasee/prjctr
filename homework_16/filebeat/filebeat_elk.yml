@@ -1,0 +1,20 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.modules:
+  - module: mysql
+    error:
+      enabled: true
+      var.paths: ["/logs/mysql_error.log*"]
+    slowlog:
+      enabled: true
+      var.paths: ["/logs/mysql-slow.log*"]
+
+output.logstash:
+  # Boolean flag to enable or disable the output module.
+  enabled: true
+
+  # The Logstash hosts
+  hosts: ["logstash:5044"]
