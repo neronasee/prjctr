@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  tree-benchmark:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: ["node", "treeBenchmark.js"]
+
+  counting-sort-benchmark:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: ["node", "countingSortBenchmark.js"]
+
