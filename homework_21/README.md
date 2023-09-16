@@ -50,4 +50,7 @@ This results in just missing data replicated on slave
 
 If the column data type is the same (it is in our case) we get a shift of columns because of use ROW binlog format
 
+![image](https://github.com/neronasee/prjctr/assets/15675643/b973b193-0818-464b-8881-06d35a826fbd)
+
+
 in case of different type we get an error that data can't be converted and a slave replication becomes broken
