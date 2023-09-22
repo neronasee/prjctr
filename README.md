@@ -19,4 +19,5 @@
 - [homework 20](homework_20)
 - [homework 21](homework_21)
 - [homework 22](homework_22)
+- [homework 24](homework_24)
 
