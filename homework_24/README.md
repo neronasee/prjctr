@@ -8,6 +8,11 @@ Implement all kinds of repository models (Full, Incremental, Differential, Rever
 
 Compare their parameters: size, ability to roll back at specific time point, speed of roll back, cost
 
+## Note
+
+we'll implement only Full and Incremental backups
+
+
 ## How to run
 
 To run mysql instance:
