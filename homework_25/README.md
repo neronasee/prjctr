@@ -36,3 +36,17 @@ benchmark2pow24();
 ```
 
 ## Test results
+
+### CPU time
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/442bbbff-f975-4171-9d74-88f701117eaf)
+
+We can observe that time spent in different benchmarks for different datasets is logarithmically proportional to the size of it's data set
+
+### Memory allocations for different datasets
+
+![image](https://github.com/neronasee/prjctr/assets/15675643/0f1f8021-ad20-4b0d-85e0-b713c616b40c)
+![image](https://github.com/neronasee/prjctr/assets/15675643/e4b6d136-f2ab-4554-bab4-dac3e6811536)
+![image](https://github.com/neronasee/prjctr/assets/15675643/599df9c2-c31e-4a25-9219-7d1d57d957df)
+
+We can observe that memory allocated for a tree is linearly proportional to the dataset size
