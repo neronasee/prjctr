@@ -1,0 +1,4 @@
+.clinic
+*.0x
+*.heapsnapshot
+*.log
